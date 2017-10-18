@@ -44,42 +44,6 @@ function error_response($errorMsg) {
 	echo json_encode($response);
 }
 
-// Validation
-
-
-if (!$state) { // The city is required
-	error_response('State is a required field');
-	die();
-}
-if (!$city) { // The city is required
-	error_response('City is a required field');
-	die();
-}
-if($since) {
-	$dateOk = true;
-	if (strlen($since)!=8) 
-		$dateOk = false;
-	else {
-		$year = substr($since, 0, 4);
-		$month = substr($since, 4,2);
-		$day = substr($since, 6,2);
-		if(!checkdate($month, $day, $year))
-			$dateOk = false;
-	}
-	if(!$dateOk) {
-		error_response('Date is not valid (Format required YYYYMMDD');
-		die();
-	}
-
-}
-
-// If the app get here is because the city is entered
-
-if (!$since) {
-	$since = date('Ymd', strtotime('-2 weeks'));
-}
-
-
 /**
  * retrieve_weather_by_date
  * Retrieves the weather for a specific date
@@ -124,6 +88,41 @@ function retrieve_weather($since, $state, $city) {
 	}
 	return $response;
 }
+
+
+// Validation
+if (!$state) { // The city is required
+	error_response('State is a required field');
+	die();
+}
+if (!$city) { // The city is required
+	error_response('City is a required field');
+	die();
+}
+if($since) {
+	$dateOk = true;
+	if (strlen($since)!=8) 
+		$dateOk = false;
+	else {
+		$year = substr($since, 0, 4);
+		$month = substr($since, 4,2);
+		$day = substr($since, 6,2);
+		if(!checkdate($month, $day, $year))
+			$dateOk = false;
+	}
+	if(!$dateOk) {
+		error_response('Date is not valid (Format required YYYYMMDD');
+		die();
+	}
+
+}
+
+// If the app get here is because the city is entered
+
+if (!$since) {
+	$since = date('Ymd', strtotime('-2 weeks'));
+}
+
 
 header('Content-Type: application/json');
 echo json_encode(retrieve_weather($since, $state, $city));
